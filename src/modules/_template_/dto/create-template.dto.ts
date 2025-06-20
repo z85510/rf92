@@ -1,10 +1,9 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { 
   IsString, 
   IsNotEmpty, 
   IsOptional, 
-  IsArray,
-  ArrayMinSize 
+  IsArray
 } from 'class-validator';
 
 export class CreateTemplateDto {
@@ -16,23 +15,21 @@ export class CreateTemplateDto {
   @IsNotEmpty({ message: 'Name is required' })
   name: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Template description',
     example: 'This is a sample template',
-    required: false,
   })
-  @IsString({ message: 'Description must be a string' })
   @IsOptional()
+  @IsString({ message: 'Description must be a string' })
   description?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Template tags',
     example: ['tag1', 'tag2'],
-    isArray: true,
-    required: false,
+    type: [String],
   })
-  @IsArray({ message: 'Tags must be an array' })
-  @IsString({ each: true, message: 'Each tag must be a string' })
   @IsOptional()
+  @IsArray({ message: 'Tags must be an array' })
+  @IsString({ each: true })
   tags?: string[];
 }
