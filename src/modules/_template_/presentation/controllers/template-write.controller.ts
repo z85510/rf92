@@ -17,16 +17,16 @@ import {
   ApiBearerAuth,
   ApiParam 
 } from '@nestjs/swagger';
-import { CurrentUser } from '../../../common/decorators/current-user.decorator';
-import { CurrentTenant } from '../../../common/decorators/current-tenant.decorator';
-import { Roles } from '../../../common/decorators/roles.decorator';
-import { JwtPayload } from '../../../common/guards/jwt-auth.guard';
-import { CreateTemplateCommand } from '../commands/create-template.command';
-import { UpdateTemplateCommand } from '../commands/update-template.command';
-import { DeleteTemplateCommand } from '../commands/delete-template.command';
-import { CreateTemplateDto } from '../dto/create-template.dto';
-import { UpdateTemplateDto } from '../dto/update-template.dto';
-import { TemplateResponseDto } from '../dto/template-response.dto';
+import { CurrentUser } from '../../../../common/decorators/current-user.decorator';
+import { CurrentTenant } from '../../../../common/decorators/current-tenant.decorator';
+import { Roles } from '../../../../common/decorators/roles.decorator';
+import { JwtPayload } from '../../../../common/guards/jwt-auth.guard';
+import { CreateTemplateCommand } from '../../application/commands/create-template.command';
+import { UpdateTemplateCommand } from '../../application/commands/update-template.command';
+import { DeleteTemplateCommand } from '../../application/commands/delete-template.command';
+import { CreateTemplateDto } from '../../dto/create-template.dto';
+import { UpdateTemplateDto } from '../../dto/update-template.dto';
+import { TemplateResponseDto } from '../../dto/template-response.dto';
 
 @ApiTags('templates')
 @ApiBearerAuth('access-token')

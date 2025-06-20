@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 /**
- * Generate a new module based on the _template_ module
+ * Generate a new module based on the _template_ module using clean architecture
  * Usage: npm run generate:module <module-name>
  * Example: npm run generate:module products
  */
@@ -46,6 +46,12 @@ function generateModule() {
 
   console.log(`🚀 Generating module: ${moduleName}`);
   console.log(`📁 Target directory: ${targetDir}`);
+  console.log('🏗️  Using Clean Architecture structure:');
+  console.log('   📦 application/ (commands, handlers, queries)');
+  console.log('   🎯 domain/ (entities, repositories, value-objects)');
+  console.log('   🔧 infrastructure/ (messaging, repositories, websocket)');
+  console.log('   🎨 presentation/ (controllers)');
+  console.log('   📝 dto/ (data transfer objects)');
   
   try {
     // Copy template directory
@@ -75,6 +81,13 @@ function generateModule() {
     console.log('4. Start development: npm run start:dev');
     console.log('');
     console.log(`📚 API Documentation will be available at: /api/docs#tag-${moduleName}s`);
+    console.log('');
+    console.log('🏛️ Clean Architecture layers created:');
+    console.log(`   📁 ${moduleName}/application/ - Use cases and business logic`);
+    console.log(`   📁 ${moduleName}/domain/ - Business entities and rules`);
+    console.log(`   📁 ${moduleName}/infrastructure/ - External concerns`);
+    console.log(`   📁 ${moduleName}/presentation/ - API controllers`);
+    console.log(`   📁 ${moduleName}/dto/ - Data contracts`);
     
   } catch (error) {
     console.error('❌ Error generating module:', error.message);
