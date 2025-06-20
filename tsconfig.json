@@ -21,5 +21,11 @@
       "@/*": ["src/*"],
       "@org/cqrs": ["src/common/cqrs"]
     }
-  }
+  },
+  "exclude": [
+    "src/modules/_template_/**/*",
+    "src/modules/products/**/*",
+    "src/modules/users/infrastructure/**/*",
+    "node_modules"
+  ]
 }

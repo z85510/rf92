@@ -4,6 +4,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { envSchema } from './config/env.schema';
 import { DatabaseModule } from './database/database.module';
 import { CommonModule } from './common/common.module';
+import { AppController } from './app.controller';
 import { UsersModule } from './modules/users/users.module';
 
 @Module({
@@ -18,5 +19,6 @@ import { UsersModule } from './modules/users/users.module';
     // Feature modules
     UsersModule,
   ],
+  controllers: [AppController],
 })
 export class AppModule {}

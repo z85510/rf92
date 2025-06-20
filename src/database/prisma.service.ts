@@ -5,28 +5,7 @@ import { LoggerService } from '../common/services/logger.service';
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
   constructor(private logger: LoggerService) {
-    super({
-      log: [
-        { emit: 'event', level: 'query' },
-        { emit: 'event', level: 'error' },
-        { emit: 'event', level: 'info' },
-        { emit: 'event', level: 'warn' },
-      ],
-    });
-
-    // Log database queries in development
-    if (process.env.NODE_ENV === 'development') {
-      this.$on('query', (e) => {
-        this.logger.debug(`Query: ${e.query}`, { 
-          params: e.params, 
-          duration: `${e.duration}ms` 
-        });
-      });
-    }
-
-    this.$on('error', (e) => {
-      this.logger.error('Database error', e.message);
-    });
+    super();
   }
 
   async onModuleInit() {

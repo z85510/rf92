@@ -4,11 +4,13 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
-import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
-import { TenantGuard } from './common/guards/tenant.guard';
+import { LoggerService } from './common/services/logger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  
+  // Get logger service from DI container
+  const logger = app.get(LoggerService);
   
   // Global pipes
   app.useGlobalPipes(new ValidationPipe({ 
@@ -21,16 +23,10 @@ async function bootstrap() {
   }));
   
   // Global filters
-  app.useGlobalFilters(new AllExceptionsFilter());
+  app.useGlobalFilters(new AllExceptionsFilter(logger));
   
   // Global interceptors
-  app.useGlobalInterceptors(new LoggingInterceptor());
-  
-  // Global guards
-  app.useGlobalGuards(
-    app.get(JwtAuthGuard),
-    app.get(TenantGuard)
-  );
+  app.useGlobalInterceptors(new LoggingInterceptor(logger));
   
   // Swagger Documentation
   const config = new DocumentBuilder()

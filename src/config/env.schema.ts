@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
-  PORT: z.string().transform(Number).default(3000),
+  PORT: z.string().transform(Number).default('3000'),
   
   // Database
   DATABASE_URL: z.string().default('postgresql://postgres:password@localhost:5432/nestjs_db?schema=public'),
