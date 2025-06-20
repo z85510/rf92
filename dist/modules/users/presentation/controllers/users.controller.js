@@ -16,6 +16,7 @@ exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
 const cqrs_1 = require("@nestjs/cqrs");
 const create_user_command_1 = require("../../application/commands/create-user.command");
+const create_user_dto_1 = require("../../dto/create-user.dto");
 const get_user_query_1 = require("../../application/queries/get-user.query");
 let UsersController = class UsersController {
     constructor(cmd, qry) {
@@ -34,18 +35,19 @@ __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "create", null);
 __decorate([
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Get)(":id"),
+    __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "findOne", null);
 exports.UsersController = UsersController = __decorate([
-    (0, common_1.Controller)('users'),
-    __metadata("design:paramtypes", [cqrs_1.CommandBus, cqrs_1.QueryBus])
+    (0, common_1.Controller)("users"),
+    __metadata("design:paramtypes", [cqrs_1.CommandBus,
+        cqrs_1.QueryBus])
 ], UsersController);
 //# sourceMappingURL=users.controller.js.map

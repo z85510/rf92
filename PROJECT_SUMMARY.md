@@ -5,6 +5,7 @@
 I've created a complete **NestJS modular architecture project** with the following features:
 
 ### 🏗️ Core Architecture
+
 - **Simplified CQRS Pattern**: Separate read/write controllers (ready to implement)
 - **Multi-Tenancy Support**: Built-in tenant isolation and validation
 - **Automatic Module Generation**: Command-line tool to create new modules
@@ -16,6 +17,7 @@ I've created a complete **NestJS modular architecture project** with the followi
 ### 🎯 Key Features Implemented
 
 #### ✅ Module Generation System
+
 ```bash
 # Generate any new module instantly
 npm run generate:module products
@@ -24,6 +26,7 @@ npm run generate:module inventory
 ```
 
 #### ✅ Project Structure
+
 ```
 src/
 ├── config/                    # Environment validation
@@ -42,17 +45,20 @@ src/
 ```
 
 #### ✅ Multi-Tenancy
+
 - Automatic tenant isolation
 - Flexible tenant resolution (subdomain or header-based)
 - Tenant validation middleware
 
 #### ✅ Security & Authentication
+
 - JWT-based authentication
 - Role-based access control with `@Roles('admin', 'user')`
 - Public routes with `@Public()` decorator
 - Current user extraction with `@CurrentUser()`
 
 #### ✅ API Documentation
+
 - Auto-generated Swagger documentation
 - Interactive API explorer
 - Request/response examples
@@ -61,12 +67,14 @@ src/
 ## 🛠️ How to Use
 
 ### 1. **Start Infrastructure**
+
 ```bash
 # Start PostgreSQL and Kafka
 docker-compose up -d
 ```
 
 ### 2. **Setup Database**
+
 ```bash
 # Generate Prisma client
 npm run db:generate
@@ -79,12 +87,14 @@ npm run db:studio
 ```
 
 ### 3. **Start Development**
+
 ```bash
 # Start the application
 npm run start:dev
 ```
 
 ### 4. **Generate New Modules**
+
 ```bash
 # Create a products module
 npm run generate:module products
@@ -99,7 +109,9 @@ npm run generate:module products
 ```
 
 ### 5. **Add Module to App**
+
 After generating a module, add it to `src/app.module.ts`:
+
 ```typescript
 import { ProductsModule } from './modules/products/products.module';
 
@@ -114,17 +126,21 @@ import { ProductsModule } from './modules/products/products.module';
 ## 📚 API Endpoints Available
 
 ### Health & Info
+
 - `GET /` - Welcome message
 - `GET /health` - Health check
 - `GET /api/docs` - Swagger documentation
 
 ### Users (Example Module)
+
 - `GET /users` - List all users
 - `GET /users/:id` - Get user by ID  
 - `POST /users` - Create new user
 
 ### Generated Modules
+
 Each generated module provides:
+
 - `GET /{module}` - List with pagination
 - `GET /{module}/:id` - Get by ID
 - `POST /{module}` - Create new
@@ -167,6 +183,7 @@ products/
 ## 🔐 Security Features
 
 ### Authentication
+
 ```typescript
 // Protect routes with JWT
 @UseGuards(JwtAuthGuard)
@@ -177,6 +194,7 @@ getProtectedData(@CurrentUser() user: JwtPayload) {
 ```
 
 ### Authorization
+
 ```typescript
 // Require specific roles
 @Roles('admin')
@@ -187,6 +205,7 @@ deleteItem(@Param('id') id: string) {
 ```
 
 ### Multi-Tenancy
+
 ```typescript
 // Automatic tenant isolation
 @Get()

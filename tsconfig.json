@@ -26,6 +26,10 @@
     "src/modules/_template_/**/*",
     "src/modules/products/**/*",
     "src/modules/users/infrastructure/**/*",
-    "node_modules"
+    "node_modules",
+    "dist",
+    "tsconfig.json",
+    "README.md"
+    
   ]
 }

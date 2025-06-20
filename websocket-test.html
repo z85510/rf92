@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Test - NestJS</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .panel {
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .log {
+            background: #f5f5f5;
+            height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .input-group {
+            margin: 10px 0;
+        }
+        input, button {
+            padding: 8px;
+            margin: 5px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+        }
+        .connected { background: #d4edda; color: #155724; }
+        .disconnected { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>🚀 NestJS WebSocket Test</h1>
+    
+    <div class="container">
+        <!-- Main WebSocket Panel -->
+        <div class="panel">
+            <h2>Main WebSocket</h2>
+            <div id="mainStatus" class="status disconnected">Disconnected</div>
+            
+            <div class="input-group">
+                <button onclick="connectMain()">Connect</button>
+                <button onclick="disconnectMain()">Disconnect</button>
+            </div>
+            
+            <div class="input-group">
+                <input type="text" id="pingMessage" placeholder="Ping message" value="Hello from client!">
+                <button onclick="sendPing()">Send Ping</button>
+            </div>
+            
+            <div class="input-group">
+                <input type="text" id="roomName" placeholder="Room name" value="test-room">
+                <button onclick="joinRoom()">Join Room</button>
+                <button onclick="leaveRoom()">Leave Room</button>
+            </div>
+            
+            <div class="input-group">
+                <input type="text" id="roomMessage" placeholder="Room message" value="Hello room!">
+                <button onclick="sendRoomMessage()">Send to Room</button>
+            </div>
+            
+            <div class="log" id="mainLog"></div>
+        </div>
+        
+        <!-- Users WebSocket Panel -->
+        <div class="panel">
+            <h2>Users WebSocket</h2>
+            <div id="usersStatus" class="status disconnected">Disconnected</div>
+            
+            <div class="input-group">
+                <button onclick="connectUsers()">Connect</button>
+                <button onclick="disconnectUsers()">Disconnect</button>
+            </div>
+            
+            <div class="input-group">
+                <input type="text" id="userId" placeholder="User ID" value="user123">
+                <select id="userStatus">
+                    <option value="online">Online</option>
+                    <option value="away">Away</option>
+                    <option value="offline">Offline</option>
+                </select>
+                <button onclick="updateUserStatus()">Update Status</button>
+            </div>
+            
+            <div class="input-group">
+                <input type="text" id="userMessage" placeholder="User message" value="Hello users!">
+                <input type="text" id="recipientId" placeholder="Recipient ID (optional)">
+                <button onclick="sendUserMessage()">Send Message</button>
+            </div>
+            
+            <div class="input-group">
+                <input type="text" id="typingUserId" placeholder="User ID" value="user123">
+                <button onclick="startTyping()">Start Typing</button>
+                <button onclick="stopTyping()">Stop Typing</button>
+            </div>
+            
+            <div class="log" id="usersLog"></div>
+        </div>
+    </div>
+
+    <script>
+        let mainSocket = null;
+        let usersSocket = null;
+
+        function log(elementId, message) {
+            const log = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            log.innerHTML += `[${timestamp}] ${message}\n`;
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function updateStatus(elementId, connected) {
+            const status = document.getElementById(elementId);
+            status.textContent = connected ? 'Connected' : 'Disconnected';
+            status.className = `status ${connected ? 'connected' : 'disconnected'}`;
+        }
+
+        // Main WebSocket Functions
+        function connectMain() {
+            mainSocket = io('http://localhost:3000');
+            
+            mainSocket.on('connect', () => {
+                updateStatus('mainStatus', true);
+                log('mainLog', 'Connected to main WebSocket');
+            });
+            
+            mainSocket.on('disconnect', () => {
+                updateStatus('mainStatus', false);
+                log('mainLog', 'Disconnected from main WebSocket');
+            });
+            
+            mainSocket.on('welcome', (data) => {
+                log('mainLog', `Welcome: ${JSON.stringify(data)}`);
+            });
+            
+            mainSocket.on('pong', (data) => {
+                log('mainLog', `Pong received: ${JSON.stringify(data)}`);
+            });
+            
+            mainSocket.on('room-joined', (data) => {
+                log('mainLog', `Room joined: ${JSON.stringify(data)}`);
+            });
+            
+            mainSocket.on('room-left', (data) => {
+                log('mainLog', `Room left: ${JSON.stringify(data)}`);
+            });
+            
+            mainSocket.on('user-joined', (data) => {
+                log('mainLog', `User joined room: ${JSON.stringify(data)}`);
+            });
+            
+            mainSocket.on('user-left', (data) => {
+                log('mainLog', `User left room: ${JSON.stringify(data)}`);
+            });
+            
+            mainSocket.on('room-message', (data) => {
+                log('mainLog', `Room message: ${JSON.stringify(data)}`);
+            });
+        }
+
+        function disconnectMain() {
+            if (mainSocket) {
+                mainSocket.disconnect();
+                mainSocket = null;
+            }
+        }
+
+        function sendPing() {
+            if (mainSocket) {
+                const message = document.getElementById('pingMessage').value;
+                mainSocket.emit('ping', message);
+                log('mainLog', `Sent ping: ${message}`);
+            }
+        }
+
+        function joinRoom() {
+            if (mainSocket) {
+                const room = document.getElementById('roomName').value;
+                mainSocket.emit('join-room', { room });
+                log('mainLog', `Joining room: ${room}`);
+            }
+        }
+
+        function leaveRoom() {
+            if (mainSocket) {
+                const room = document.getElementById('roomName').value;
+                mainSocket.emit('leave-room', { room });
+                log('mainLog', `Leaving room: ${room}`);
+            }
+        }
+
+        function sendRoomMessage() {
+            if (mainSocket) {
+                const room = document.getElementById('roomName').value;
+                const message = document.getElementById('roomMessage').value;
+                mainSocket.emit('room-message', { room, message });
+                log('mainLog', `Sending room message: ${message}`);
+            }
+        }
+
+        // Users WebSocket Functions
+        function connectUsers() {
+            usersSocket = io('http://localhost:3000/users');
+            
+            usersSocket.on('connect', () => {
+                updateStatus('usersStatus', true);
+                log('usersLog', 'Connected to users WebSocket');
+            });
+            
+            usersSocket.on('disconnect', () => {
+                updateStatus('usersStatus', false);
+                log('usersLog', 'Disconnected from users WebSocket');
+            });
+            
+            usersSocket.on('user-status-updated', (data) => {
+                log('usersLog', `User status updated: ${JSON.stringify(data)}`);
+            });
+            
+            usersSocket.on('user-room-joined', (data) => {
+                log('usersLog', `User room joined: ${JSON.stringify(data)}`);
+            });
+            
+            usersSocket.on('private-message', (data) => {
+                log('usersLog', `Private message: ${JSON.stringify(data)}`);
+            });
+            
+            usersSocket.on('message-sent', (data) => {
+                log('usersLog', `Message sent: ${JSON.stringify(data)}`);
+            });
+            
+            usersSocket.on('user-message', (data) => {
+                log('usersLog', `User message: ${JSON.stringify(data)}`);
+            });
+            
+            usersSocket.on('user-typing', (data) => {
+                log('usersLog', `User typing: ${JSON.stringify(data)}`);
+            });
+        }
+
+        function disconnectUsers() {
+            if (usersSocket) {
+                usersSocket.disconnect();
+                usersSocket = null;
+            }
+        }
+
+        function updateUserStatus() {
+            if (usersSocket) {
+                const userId = document.getElementById('userId').value;
+                const status = document.getElementById('userStatus').value;
+                usersSocket.emit('user-status', { userId, status });
+                log('usersLog', `Updating user status: ${userId} -> ${status}`);
+            }
+        }
+
+        function sendUserMessage() {
+            if (usersSocket) {
+                const userId = document.getElementById('userId').value;
+                const message = document.getElementById('userMessage').value;
+                const recipientId = document.getElementById('recipientId').value;
+                
+                const data = { userId, message };
+                if (recipientId) {
+                    data.recipientId = recipientId;
+                }
+                
+                usersSocket.emit('user-message', data);
+                log('usersLog', `Sending user message: ${JSON.stringify(data)}`);
+            }
+        }
+
+        function startTyping() {
+            if (usersSocket) {
+                const userId = document.getElementById('typingUserId').value;
+                const recipientId = document.getElementById('recipientId').value;
+                
+                const data = { userId, isTyping: true };
+                if (recipientId) {
+                    data.recipientId = recipientId;
+                }
+                
+                usersSocket.emit('user-typing', data);
+                log('usersLog', `Started typing: ${JSON.stringify(data)}`);
+            }
+        }
+
+        function stopTyping() {
+            if (usersSocket) {
+                const userId = document.getElementById('typingUserId').value;
+                const recipientId = document.getElementById('recipientId').value;
+                
+                const data = { userId, isTyping: false };
+                if (recipientId) {
+                    data.recipientId = recipientId;
+                }
+                
+                usersSocket.emit('user-typing', data);
+                log('usersLog', `Stopped typing: ${JSON.stringify(data)}`);
+            }
+        }
+    </script>
+</body>
+</html> 

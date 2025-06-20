@@ -26,6 +26,7 @@ This project follows a feature-based modular architecture with:
 ### Installation
 
 1. **Clone and install dependencies:**
+
 ```bash
 git clone <repository-url>
 cd nestjs-modular-project
@@ -33,11 +34,13 @@ npm install
 ```
 
 2. **Start infrastructure services:**
+
 ```bash
 docker-compose up -d
 ```
 
 3. **Set up the database:**
+
 ```bash
 # Generate Prisma client
 npm run db:generate
@@ -50,6 +53,7 @@ npm run db:studio
 ```
 
 4. **Start the application:**
+
 ```bash
 # Development mode
 npm run start:dev
@@ -60,9 +64,10 @@ npm run start:prod
 ```
 
 5. **Access the application:**
-- **API**: http://localhost:3000
-- **Swagger Docs**: http://localhost:3000/api/docs
-- **Health Check**: http://localhost:3000/health
+
+- **API**: <http://localhost:3000>
+- **Swagger Docs**: <http://localhost:3000/api/docs>
+- **Health Check**: <http://localhost:3000/health>
 
 ## � Module Generation
 
@@ -173,7 +178,7 @@ async getAdminData(@CurrentUser() user: JwtPayload) {
 
 Every generated module includes comprehensive Swagger documentation:
 
-- **Interactive API Explorer**: http://localhost:3000/api/docs
+- **Interactive API Explorer**: <http://localhost:3000/api/docs>
 - **Request/Response Examples**
 - **Authentication Setup**
 - **Error Response Documentation**
@@ -244,11 +249,13 @@ npm run test:cov          # Test coverage
 ## � Key Features
 
 ### CQRS Architecture
+
 - **Command/Query Separation**: Clear separation of read and write operations
 - **Scalable**: Different optimization strategies for reads vs writes
 - **Maintainable**: Clear responsibility boundaries
 
 ### Built-in Best Practices
+
 - **Input Validation**: Automatic validation with detailed error messages
 - **Error Handling**: Global exception filters with proper HTTP status codes
 - **Logging**: Structured logging with tenant and user context
@@ -256,6 +263,7 @@ npm run test:cov          # Test coverage
 - **Documentation**: Auto-generated API documentation
 
 ### Enterprise Ready
+
 - **Multi-Tenancy**: Built-in tenant isolation
 - **Scalability**: Modular architecture for team development
 - **Maintainability**: Consistent patterns across all modules
@@ -276,6 +284,7 @@ docker-compose -f docker-compose.prod.yml up
 ### Environment Variables
 
 Ensure these are set in production:
+
 - `DATABASE_URL`: Production database connection
 - `JWT_SECRET`: Strong secret for JWT signing
 - `NODE_ENV=production`
