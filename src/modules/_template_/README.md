@@ -1,173 +1,129 @@
-# Module Template System
+# Template Module
 
-This `_template_` directory contains the boilerplate structure for creating new modules in this NestJS project. It provides a consistent architecture pattern that follows CQRS principles with separate read/write controllers.
+This is a template module that follows **Clean Architecture** principles. Use this as a reference or starting point for creating new modules in the application.
 
-## 🚀 Quick Module Generation
+## 🏗️ Clean Architecture Structure
 
-Generate a new module using the built-in script:
-
-```bash
-# Generate a new module (e.g., products)
-npm run generate:module products
-
-# Generate another module (e.g., orders)
-npm run generate:module orders
-```
-
-## 📁 Template Structure
+This module is organized into the following layers, each with specific responsibilities:
 
 ```
 _template_/
-├── controllers/
-│   ├── template-read.controller.ts   # Query operations (GET)
-│   └── template-write.controller.ts  # Command operations (POST, PUT, DELETE)
-├── dto/
-│   ├── create-template.dto.ts        # Input validation for creation
-│   ├── update-template.dto.ts        # Input validation for updates
-│   └── template-response.dto.ts      # Response format with Swagger docs
-├── services/
-│   ├── template.service.ts           # Business logic for commands
-│   └── template-query.service.ts     # Business logic for queries
-├── handlers/
-│   ├── create-template.handler.ts    # CQRS command handlers
-│   ├── update-template.handler.ts
-│   ├── delete-template.handler.ts
-│   ├── get-template.handler.ts       # CQRS query handlers
-│   └── get-templates.handler.ts
-├── commands/
-│   ├── create-template.command.ts    # Command definitions
-│   ├── update-template.command.ts
-│   └── delete-template.command.ts
-├── queries/
-│   ├── get-template.query.ts         # Query definitions
-│   └── get-templates.query.ts
-└── template.module.ts                # Module configuration
+├── 📦 application/          # Application Layer - Use cases and business logic
+│   ├── commands/           # Commands (write operations)
+│   ├── handlers/           # Command and Query handlers
+│   └── queries/            # Queries (read operations)
+├── 🎯 domain/              # Domain Layer - Business entities and rules
+│   ├── entities/           # Domain entities (business objects)
+│   ├── repositories/       # Repository interfaces (contracts)
+│   └── value-objects/      # Value objects for domain validation
+├── 🔧 infrastructure/      # Infrastructure Layer - External concerns
+│   ├── messaging/          # Event publishing (Kafka)
+│   ├── repositories/       # Repository implementations (Prisma)
+│   └── websocket/          # WebSocket gateways
+├── 🎨 presentation/        # Presentation Layer - API controllers
+│   └── controllers/        # HTTP controllers (read/write separated)
+├── 📝 dto/                 # Data Transfer Objects
+└── template.module.ts      # NestJS module configuration
 ```
 
-## 🔧 What Gets Generated
+## � Architecture Principles
 
-When you run `npm run generate:module products`, the script will:
+### 1. **Dependency Inversion**
+- High-level modules don't depend on low-level modules
+- Both depend on abstractions (interfaces)
+- Repository pattern with dependency injection
 
-1. **Copy** the entire `_template_` directory to `src/modules/products/`
-2. **Replace** all occurrences of:
-   - `Template` → `Product` (PascalCase)
-   - `template` → `product` (lowercase)
-   - `templates` → `products` (plural for API endpoints)
-3. **Rename** all files from `template-*` to `product-*`
-4. **Generate** a complete module with:
-   - ✅ Read controller (`/products` GET endpoints)
-   - ✅ Write controller (`/products` POST/PUT/DELETE endpoints)
-   - ✅ CQRS commands and queries
-   - ✅ Service layer with business logic
-   - ✅ DTOs with validation and Swagger documentation
-   - ✅ Multi-tenant support
-   - ✅ Role-based access control
+### 2. **Separation of Concerns**
+- Each layer has a single responsibility
+- Clear boundaries between layers
+- Controllers handle HTTP, handlers handle business logic
 
-## 📋 Next Steps After Generation
+### 3. **CQRS (Command Query Responsibility Segregation)**
+- Commands for write operations (create, update, delete)
+- Queries for read operations (get, list)
+- Separate handlers for each operation
 
-1. **Add the module to `app.module.ts`:**
-   ```typescript
-   import { ProductsModule } from './modules/products/products.module';
-   
-   @Module({
-     imports: [
-       // ... other modules
-       ProductsModule,
-     ],
-   })
-   ```
+### 4. **Domain-Driven Design**
+- Rich domain entities with business logic
+- Value objects for validation
+- Repository interfaces define contracts
 
-2. **Update Prisma schema** (if needed):
-   ```prisma
-   model Product {
-     id          String   @id @default(uuid())
-     name        String
-     description String?
-     price       Decimal?
-     tenantId    String
-     tenant      Tenant   @relation(fields: [tenantId], references: [id])
-     createdAt   DateTime @default(now())
-     updatedAt   DateTime @updatedAt
-     
-     @@map("products")
-   }
-   ```
+## 🚀 Usage
 
-3. **Run database commands:**
-   ```bash
-   npx prisma generate
-   npx prisma db push
-   ```
+### Creating a New Module
 
-4. **Start development:**
-   ```bash
-   npm run start:dev
-   ```
-
-## 🏗️ Architecture Features
-
-### CQRS Pattern
-- **Commands**: Create, Update, Delete operations
-- **Queries**: Read operations with complex filtering
-- **Handlers**: Separate business logic for each operation
-
-### Multi-Tenancy
-- Automatic tenant isolation
-- Tenant validation middleware
-- Tenant-specific data queries
-
-### Security
-- JWT authentication
-- Role-based access control
-- Input validation
-- Tenant-based authorization
-
-### Documentation
-- Comprehensive Swagger documentation
-- API examples and descriptions
-- Request/response schemas
-
-### Best Practices
-- Separation of concerns
-- Dependency injection
-- Error handling
-- Logging and monitoring
-- Type safety
-
-## 🔄 Customizing the Template
-
-To modify the template for your project needs:
-
-1. Edit files in `src/modules/_template_/`
-2. Update placeholders (`Template`, `template`, etc.)
-3. Run the generator to test your changes
-4. Generated modules will use your updated template
-
-## 🎯 Example Usage
-
-After generating a `products` module:
+Use the generation script to create a new module based on this template:
 
 ```bash
-# API endpoints available:
-GET    /products           # List products with pagination
-GET    /products/:id       # Get single product
-POST   /products           # Create new product
-PATCH  /products/:id       # Update product
-DELETE /products/:id       # Delete product
-
-# Swagger documentation:
-http://localhost:3000/api/docs#tag-products
+npm run generate:module your-module-name
 ```
+
+This will:
+- Copy the entire clean architecture structure
+- Replace all template references with your module name
+- Set up all necessary files and dependencies
+
+### Manual Steps After Generation
+
+1. **Add to App Module**:
+```typescript
+import { YourModuleModule } from './modules/your-module/your-module.module';
+
+@Module({
+  imports: [
+    // ... other modules
+    YourModuleModule,
+  ],
+})
+export class AppModule {}
+```
+
+2. **Update Prisma Schema**:
+Add your entity model to `prisma/schema.prisma`
+
+3. **Generate Prisma Client**:
+```bash
+npx prisma generate && npx prisma db push
+```
+
+## 📚 Layer Documentation
+
+Each layer has its own README with detailed information:
+
+- [Application Layer](./application/README.md) - Commands, queries, and handlers
+- [Domain Layer](./domain/README.md) - Entities, repositories, and value objects
+- [Infrastructure Layer](./infrastructure/README.md) - External dependencies
+- [Presentation Layer](./presentation/README.md) - HTTP controllers
+- [DTOs](./dto/README.md) - Data transfer objects
 
 ## 🧪 Testing
 
-Each generated module includes the foundation for:
-- Unit tests for services
-- Integration tests for controllers
-- E2E tests for complete workflows
+Each layer should be tested independently:
 
-Start with the generated structure and add your specific test cases.
+- **Domain**: Unit tests for entities and value objects
+- **Application**: Unit tests for handlers with mocked dependencies
+- **Infrastructure**: Integration tests with real databases
+- **Presentation**: E2E tests for HTTP endpoints
 
----
+## 🔄 Data Flow
 
-This template system ensures consistency across your entire application while allowing for rapid development of new features. Happy coding! 🚀
+```
+HTTP Request → Controller → Command/Query → Handler → Repository → Database
+                ↓             ↓             ↓           ↓
+            Validation    Business Logic  Domain     Data Access
+```
+
+## 📖 Best Practices
+
+1. **Keep entities rich** - Put business logic in domain entities
+2. **Use value objects** - For validation and type safety
+3. **Thin controllers** - Only handle HTTP concerns
+4. **Single responsibility** - Each handler does one thing
+5. **Interface segregation** - Small, focused interfaces
+6. **Dependency injection** - Use IoC container for dependencies
+
+## 🔗 Related Documentation
+
+- [Clean Architecture Overview](../../../docs/ARCHITECTURE.md)
+- [Project Testing Guidelines](../../../docs/TESTING.md)
+- [API Documentation](../../../docs/API.md)
