@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { CqrsModule } from '@nestjs/cqrs';
 import { envSchema } from './config/env.schema';
-import { LoggerModule } from './infrastructure/logger/logger.module';
-import { DatabaseModule } from './infrastructure/database/database.module';
-import { KafkaModule } from './infrastructure/kafka/kafka.module';
+import { DatabaseModule } from './database/database.module';
+import { CommonModule } from './common/common.module';
 import { UsersModule } from './modules/users/users.module';
 
 @Module({
@@ -12,9 +12,9 @@ import { UsersModule } from './modules/users/users.module';
       isGlobal: true,
       validate: (config) => envSchema.parse(config),
     }),
-    LoggerModule,
+    CqrsModule.forRoot(),
     DatabaseModule,
-    KafkaModule,
+    CommonModule,
     // Feature modules
     UsersModule,
   ],
