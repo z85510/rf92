@@ -1,0 +1,1 @@
+{"version":3,"file":"shared-cqrs.module.js","sourceRoot":"","sources":["../../../src/common/cqrs/shared-cqrs.module.ts"],"names":[],"mappings":";;;;;;;;;AAAA,2CAAwC;AACxC,uCAA0C;AAMnC,IAAM,gBAAgB,GAAtB,MAAM,gBAAgB;CAAG,CAAA;AAAnB,4CAAgB;2BAAhB,gBAAgB;IAJ5B,IAAA,eAAM,EAAC;QACN,OAAO,EAAE,CAAC,iBAAU,CAAC;QACrB,OAAO,EAAE,CAAC,iBAAU,CAAC;KACtB,CAAC;GACW,gBAAgB,CAAG"}
